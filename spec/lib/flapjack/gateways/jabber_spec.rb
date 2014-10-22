@@ -56,6 +56,8 @@ describe Flapjack::Gateways::Jabber, :logger => true do
 
   it "announces arrival in chat room after connecting" do
     fj = Flapjack::Gateways::Jabber.new(:config => config, :logger => @logger)
+    expect(fj).to receive(:connected?).and_return(true)
+
     expect(EventMachine::Synchrony).to receive(:next_tick).and_yield
     expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Presence))
     expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Message))
@@ -64,6 +66,8 @@ describe Flapjack::Gateways::Jabber, :logger => true do
   it "does not announce arrival in chat room after connecting" do
     config['chatbot_announce'] = 'no'
     fj = Flapjack::Gateways::Jabber.new(:config => config, :logger => @logger)
+    expect(fj).to receive(:connected?).and_return(true)
+
     expect(EventMachine::Synchrony).to receive(:next_tick).and_yield
     expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Presence))
     expect(fj).to should_not_receive(:write).with(an_instance_of(Blather::Stanza::Message))
