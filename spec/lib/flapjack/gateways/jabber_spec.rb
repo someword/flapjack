@@ -73,7 +73,7 @@ describe Flapjack::Gateways::Jabber, :logger => true do
 
     expect(EventMachine::Synchrony).to receive(:next_tick).and_yield
     expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Presence))
-    expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Message))
+    expect(fj).to should_not_receive(:write).with(an_instance_of(Blather::Stanza::Message))
     fj.on_ready(stanza)
   end
 
