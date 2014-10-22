@@ -128,6 +128,8 @@ production:
     # handles acknowledgements from jabber users and other commands.
     jabber:
       enabled: no
+      # Announce my arrival in the Multi-User Chat room
+      chatbot_announce: yes
       # the redis queue this pikelet will look for notifications on
       queue: jabber_notifications
       server: "jabber.example.com"
