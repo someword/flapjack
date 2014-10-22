@@ -62,7 +62,7 @@ describe Flapjack::Gateways::Jabber, :logger => true do
   end
 
   it "does not announce arrival in chat room after connecting" do
-    config['chatbot_announce'] = no
+    config['chatbot_announce'] = 'no'
     fj = Flapjack::Gateways::Jabber.new(:config => config, :logger => @logger)
     expect(EventMachine::Synchrony).to receive(:next_tick).and_yield
     expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Presence))
