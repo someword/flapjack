@@ -66,6 +66,7 @@ describe Flapjack::Gateways::Jabber, :logger => true do
   end
 
   it "does not announce arrival in chat room after connecting" do
+    expect(Flapjack::RedisPool).to receive(:new)
     config['chatbot_announce'] = 'no'
     fj = Flapjack::Gateways::Jabber.new(:config => config, :logger => @logger)
     expect(fj).to receive(:connected?).and_return(true)
