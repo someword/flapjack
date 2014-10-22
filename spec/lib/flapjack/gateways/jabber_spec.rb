@@ -3,14 +3,15 @@ require 'flapjack/gateways/jabber'
 
 describe Flapjack::Gateways::Jabber, :logger => true do
 
-  let(:config) { {'queue'       => 'jabber_notifications',
-                  'server'      => 'example.com',
-                  'port'        => '5222',
-                  'jabberid'    => 'flapjack@example.com',
-                  'password'    => 'password',
-                  'alias'       => 'flapjack',
-                  'identifiers' => ['@flapjack'],
-                  'rooms'       => ['flapjacktest@conference.example.com']
+  let(:config) { {'queue'            => 'jabber_notifications',
+                  'server'           => 'example.com',
+                  'port'             => '5222',
+                  'jabberid'         => 'flapjack@example.com',
+                  'password'         => 'password',
+                  'alias'            => 'flapjack',
+                  'identifiers'      => ['@flapjack'],
+                  'rooms'            => ['flapjacktest@conference.example.com'],
+                  'chatbot_announce' => 'yes',
                  }
   }
 
@@ -52,6 +53,22 @@ describe Flapjack::Gateways::Jabber, :logger => true do
 
     fj.on_ready(stanza)
   end
+
+  it "announces arrival in chat room after connecting" do
+    fj = Flapjack::Gateways::Jabber.new(:config => config, :logger => @logger)
+    expect(EventMachine::Synchrony).to receive(:next_tick).and_yield
+    expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Presence))
+    expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Message))
+  end
+
+  it "does not announce arrival in chat room after connecting" do
+    config['chatbot_announce'] = no
+    fj = Flapjack::Gateways::Jabber.new(:config => config, :logger => @logger)
+    expect(EventMachine::Synchrony).to receive(:next_tick).and_yield
+    expect(fj).to receive(:write).with(an_instance_of(Blather::Stanza::Presence))
+    expect(fj).to should_not_receive(:write).with(an_instance_of(Blather::Stanza::Message))
+  end
+
 
   it "receives an acknowledgement message" do
     expect(stanza).to receive(:body).twice.and_return('flapjack: ACKID 1f8ac10f fixing now duration: 90m')
